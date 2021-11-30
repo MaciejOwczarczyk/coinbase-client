@@ -66,6 +66,9 @@ build/
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
+mvnw
+mvnw.cmd
+
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
