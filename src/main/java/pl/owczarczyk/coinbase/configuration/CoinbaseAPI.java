@@ -15,6 +15,7 @@ public class CoinbaseAPI {
 
     private static final String TEST = "/oracle";
     private static final String TEST_2 = "https://api.exchange.coinbase.com/oracle";
+    private static final String TEST_3 = "https://api.exchange.coinbase.com/products";
     private final AuthorizationServiceImpl authorizationService;
     private final TimeStampServiceImpl timeStampService;
     private final WebClient webClient;
@@ -29,7 +30,7 @@ public class CoinbaseAPI {
         String timestamp = timeStampService.getTimeStamp();
         MultiValueMap<String, String> map = authorizationService.getHeaderPro(TEST, "GET", "", timestamp);
 
-        Mono<String> mono = webClient.get().uri(new URI(TEST_2)).headers(httpHeaders -> {
+        Mono<String> mono = webClient.get().uri(new URI(TEST_3)).headers(httpHeaders -> {
             httpHeaders.addAll(map);
         }).retrieve().bodyToMono(String.class);
 
