@@ -15,8 +15,8 @@ import java.util.Objects;
 public class TimeStampServiceImpl implements TimeStampService {
 
 
-    private final static String EPOCH = "epoch";
-    private final static String PATH = "https://api.coinbase.com/v2/time";
+    private static final String EPOCH = "epoch";
+    private static final String PATH = "https://api.coinbase.com/v2/time";
     private static final Logger LOGGER = LogManager.getLogger(TimeStampServiceImpl.class);
     private final WebClient webClient;
 

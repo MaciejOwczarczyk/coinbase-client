@@ -1,5 +1,6 @@
-package pl.owczarczyk.coinbase.user;
+package pl.owczarczyk.coinbase.account;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,8 +13,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user", schema = "\"coinbaseapi\"")
-public class User {
+@Table(name = "account", schema = "\"coinbaseapi\"")
+public class Account {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -23,7 +24,13 @@ public class User {
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
-    private String name;
-    private String surname;
+    @Column(unique = true)
+    private String currency;
+    private String balance;
+    private String available;
+    private String hold;
+    private UUID profile_id;
+    private boolean tradingEnabled;
+
 
 }
