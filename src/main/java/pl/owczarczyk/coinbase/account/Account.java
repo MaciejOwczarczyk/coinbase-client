@@ -1,10 +1,9 @@
 package pl.owczarczyk.coinbase.account;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -14,14 +13,10 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @Table(name = "account", schema = "\"coinbaseapi\"")
+@ToString
 public class Account {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
     @Column(unique = true)
@@ -30,7 +25,7 @@ public class Account {
     private String available;
     private String hold;
     private UUID profile_id;
-    private boolean tradingEnabled;
+    private boolean trading_enabled;
 
 
 }

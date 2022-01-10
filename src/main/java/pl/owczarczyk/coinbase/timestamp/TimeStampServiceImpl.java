@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import pl.owczarczyk.coinbase.configuration.ConfigLoaderServiceImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,12 +17,14 @@ public class TimeStampServiceImpl implements TimeStampService {
 
 
     private static final String EPOCH = "epoch";
-    private static final String PATH = "https://api.coinbase.com/v2/time";
+    private static final String API_TIMESTAMP_ENDPOINT = "server.coinbase.timestamp.endpoint";
     private static final Logger LOGGER = LogManager.getLogger(TimeStampServiceImpl.class);
     private final WebClient webClient;
+    private final ConfigLoaderServiceImpl configLoaderService;
 
-    public TimeStampServiceImpl(WebClient webClient) {
+    public TimeStampServiceImpl(WebClient webClient, ConfigLoaderServiceImpl configLoaderService) {
         this.webClient = webClient;
+        this.configLoaderService = configLoaderService;
     }
 
     @Override
@@ -46,7 +49,8 @@ public class TimeStampServiceImpl implements TimeStampService {
 
     private URI getUri() {
         try {
-            return new URI(PATH);
+            String endPoint = this.configLoaderService.getPropertyByName(API_TIMESTAMP_ENDPOINT);
+            return new URI(endPoint);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

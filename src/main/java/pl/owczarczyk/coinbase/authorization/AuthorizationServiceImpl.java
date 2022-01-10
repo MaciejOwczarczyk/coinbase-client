@@ -22,20 +22,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private static final String API_KEY = "client.coinbase.key";
     private static final String API_PASSPHRASE = "client.coinbase.pass-phrase";
     private static final String HMAC_SHA_256 = "HmacSHA256";
-    private final UserRepository userRepository;
     private final ConfigLoaderServiceImpl configLoaderService;
 
     public AuthorizationServiceImpl(UserRepository userRepository, ConfigLoaderServiceImpl configLoaderService) {
-        this.userRepository = userRepository;
         this.configLoaderService = configLoaderService;
     }
 
     @Override
     public MultiValueMap<String, String> getHeader(String requestPath, String method, String body, String timestamp) {
-        User user = new User();
-        user.setName("name");
-        user.setSurname("surname");
-        userRepository.save(user);
         String preHash = timestamp + method.toUpperCase() + requestPath + body;
         String apiSecret = this.configLoaderService.getPropertyByName(API_SECRET);
         String apiKey = this.configLoaderService.getPropertyByName(API_KEY);
@@ -51,10 +45,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public MultiValueMap<String, String> getHeaderPro(String requestPath, String method, String body, String timestamp) {
         try {
-            User user = new User();
-            user.setName("name");
-            user.setSurname("surname");
-            userRepository.save(user);
             String apiSecret = this.configLoaderService.getPropertyByName(API_SECRET);
             String apiKey = this.configLoaderService.getPropertyByName(API_KEY);
             String passPhrase = this.configLoaderService.getPropertyByName(API_PASSPHRASE);
@@ -70,6 +60,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             outPut.add("CB-ACCESS-KEY", apiKey);
             outPut.add("CB-ACCESS-PASSPHRASE", passPhrase);
             outPut.add("Content-Type","application/json");
+            outPut.add("Accept", "application/json");
             return outPut;
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             e.printStackTrace();
