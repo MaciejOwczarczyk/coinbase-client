@@ -13,16 +13,16 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 @Component
-public class TimeStampServiceImpl implements TimeStampService {
+public class CoinbaseTimeStampServiceImpl implements CoinbaseTimeStampService {
 
 
     private static final String EPOCH = "epoch";
     private static final String API_TIMESTAMP_ENDPOINT = "server.coinbase.timestamp.endpoint";
-    private static final Logger LOGGER = LogManager.getLogger(TimeStampServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(CoinbaseTimeStampServiceImpl.class);
     private final WebClient webClient;
     private final ConfigLoaderServiceImpl configLoaderService;
 
-    public TimeStampServiceImpl(WebClient webClient, ConfigLoaderServiceImpl configLoaderService) {
+    public CoinbaseTimeStampServiceImpl(WebClient webClient, ConfigLoaderServiceImpl configLoaderService) {
         this.webClient = webClient;
         this.configLoaderService = configLoaderService;
     }
@@ -33,15 +33,15 @@ public class TimeStampServiceImpl implements TimeStampService {
         String out = "";
         if (Objects.nonNull(uri)) {
             try {
-                TimeStamp mono = this.webClient.get().uri(uri)
+                CoinbaseTimeStamp mono = this.webClient.get().uri(uri)
                         .retrieve()
-                        .bodyToMono(TimeStamp.class)
+                        .bodyToMono(CoinbaseTimeStamp.class)
                         .block();
                 assert mono != null;
                 out = mono.getData().get(EPOCH);
                 LOGGER.info("Timestamp from api <{}> ", out);
             } catch (WebClientResponseException | WebClientRequestException e) {
-                throw new TimeStampException(e.getMessage());
+                throw new CoinbaseTimeStampException(e.getMessage());
             }
         }
         return out;

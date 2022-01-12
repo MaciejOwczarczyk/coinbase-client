@@ -19,6 +19,10 @@ public class CoinbaseClientApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		coinbaseAPI.test();
+		try {
+			coinbaseAPI.test();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
 	}
 }

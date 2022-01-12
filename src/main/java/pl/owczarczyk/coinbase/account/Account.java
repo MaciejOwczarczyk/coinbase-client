@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,6 +27,10 @@ public class Account {
     private String hold;
     private UUID profile_id;
     private boolean trading_enabled;
+
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<Hold> holds;
 
 
 }
