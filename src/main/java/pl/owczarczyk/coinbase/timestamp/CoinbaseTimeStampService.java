@@ -1,6 +1,6 @@
 package pl.owczarczyk.coinbase.timestamp;
 
-public interface TimeStampService {
+public interface CoinbaseTimeStampService {
 
     String getTimeStamp();
 }

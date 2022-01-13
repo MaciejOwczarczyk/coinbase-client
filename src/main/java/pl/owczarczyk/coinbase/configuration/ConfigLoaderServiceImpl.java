@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
-@Component
 public class ConfigLoaderServiceImpl implements ConfigLoaderService {
 
     private final Properties properties;

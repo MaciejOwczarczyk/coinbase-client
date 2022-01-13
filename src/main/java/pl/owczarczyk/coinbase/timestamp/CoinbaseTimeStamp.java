@@ -9,7 +9,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TimeStamp {
+public class CoinbaseTimeStamp {
 
     private Map<String, String> data;
 

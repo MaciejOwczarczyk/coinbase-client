@@ -13,9 +13,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 @PropertySource("classpath:application.properties")
 public class AppConfig {
 
+    private static final String SERVER_COINBASE_URL = "server.coinbase.url";
+
     @Bean
     public WebClient webClient() {
-        return WebClient.builder().build();
+        String baseUri = configLoaderService().getPropertyByName(SERVER_COINBASE_URL);
+        return WebClient.builder().baseUrl(baseUri).build();
+    }
+
+    @Bean
+    public ConfigLoaderServiceImpl configLoaderService() {
+        return new ConfigLoaderServiceImpl();
     }
 
 
