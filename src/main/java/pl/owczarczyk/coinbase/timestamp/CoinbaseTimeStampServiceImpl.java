@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import pl.owczarczyk.coinbase.configuration.ConfigLoaderServiceImpl;
+import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
