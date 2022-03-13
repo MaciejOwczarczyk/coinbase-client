@@ -1,4 +1,4 @@
-package pl.owczarczyk.coinbase.configuration;
+package pl.owczarczyk.coinbase.config;
 
 public interface ConfigLoaderService {
 

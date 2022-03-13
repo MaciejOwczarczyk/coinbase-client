@@ -1,6 +1,4 @@
-package pl.owczarczyk.coinbase.configuration;
-
-import org.springframework.stereotype.Component;
+package pl.owczarczyk.coinbase.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,8 +23,11 @@ public class ConfigLoaderServiceImpl implements ConfigLoaderService {
     }
 
     @Override
-    public String getPropertyByName(String name) {
-        String property = properties.getProperty(name);
-        return Objects.nonNull(property) ? property : "";
+    public String getPropertyByName(String name) throws PropertyException {
+        String property = this.properties.getProperty(name);
+        if (Objects.nonNull(property)) {
+            return property;
+        }
+        throw new PropertyException("Property does not exist: " + name);
     }
 }
