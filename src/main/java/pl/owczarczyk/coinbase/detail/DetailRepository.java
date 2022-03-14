@@ -1,4 +1,4 @@
-package pl.owczarczyk.coinbase.ledger;
+package pl.owczarczyk.coinbase.detail;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
