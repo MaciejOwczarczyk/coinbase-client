@@ -1,4 +1,4 @@
-package pl.owczarczyk.coinbase.ledger;
+package pl.owczarczyk.coinbase.detail;
 
 
 import lombok.Getter;
@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import pl.owczarczyk.coinbase.ledger.Ledger;
 
 import javax.persistence.*;
 import java.util.UUID;
