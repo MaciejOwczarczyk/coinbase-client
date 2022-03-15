@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface LedgerService {
 
-    List<LedgerDTO> getLedgersByAccount(Account account);
+    List<LedgerDTO> getLedgersByAccount(Account account, String startDate, String endDate, Integer before, Integer after, Integer limit, String profileId);
 }

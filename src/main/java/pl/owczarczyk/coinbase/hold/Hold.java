@@ -1,6 +1,7 @@
 package pl.owczarczyk.coinbase.hold;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import pl.owczarczyk.coinbase.account.Account;
 
@@ -21,7 +22,8 @@ public class Hold {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
-    private Timestamp created_at;
+    @JsonProperty("created_at")
+    private Timestamp createdAt;
     @Column(precision = 19, scale = 10)
     private BigDecimal amount;
     private String ref;

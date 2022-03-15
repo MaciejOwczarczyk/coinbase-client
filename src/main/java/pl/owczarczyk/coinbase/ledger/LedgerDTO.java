@@ -21,7 +21,7 @@ public class LedgerDTO {
     private String amount;
     private Timestamp created_at;
     private BigDecimal balance;
-    private String type;
+    private Type type;
     private LinkedHashMap<String, String> details;
 
 }
