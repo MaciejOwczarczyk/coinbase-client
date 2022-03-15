@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import pl.owczarczyk.coinbase.account.Account;
+import pl.owczarczyk.coinbase.detail.Detail;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -25,11 +26,16 @@ public class Ledger {
     private Timestamp created_at;
     @Column(precision = 19, scale = 10)
     private BigDecimal balance;
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     @NotEmpty
     @ManyToOne
     private Account account;
+
+    @OneToOne
+    @JoinColumn(name = "transfer_id")
+    private Detail detail;
 
     public Ledger(LedgerDTO ledgerDTO) {
         this.id = ledgerDTO.getId();

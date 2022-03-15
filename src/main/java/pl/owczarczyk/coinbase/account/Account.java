@@ -1,5 +1,6 @@
 package pl.owczarczyk.coinbase.account;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import pl.owczarczyk.coinbase.hold.Hold;
 import pl.owczarczyk.coinbase.ledger.Ledger;
@@ -28,8 +29,10 @@ public class Account {
     private BigDecimal available;
     @Column(precision = 19, scale = 10)
     private BigDecimal hold;
-    private UUID profile_id;
-    private boolean trading_enabled;
+    @JsonProperty("profile_id")
+    private UUID profileId;
+    @JsonProperty("trading_enabled")
+    private boolean tradingEnabled;
 
     @OneToMany(mappedBy = "account")
     @ToString.Exclude
