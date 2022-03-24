@@ -39,6 +39,8 @@ public class HoldServiceImpl implements HoldService {
         String endPoint = holds + sb;
         URI uri1 = UriComponentsBuilder.fromUriString(endPoint).build(id);
         LOGGER.debug("Request path <{}>", uri1);
-        return coinbaseExchange.getAllAsList(uri1.toString(), new ParameterizedTypeReference<>() {});
+        List<Hold> holdsTemp = coinbaseExchange.getAllAsList(uri1.toString(), new ParameterizedTypeReference<>() {});
+        holdsTemp.forEach(o -> o.setAccount(account));
+        return holdsTemp;
     }
 }

@@ -15,6 +15,7 @@ import pl.owczarczyk.coinbase.utils.Validator;
 import java.net.URI;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class LedgerServiceImpl implements LedgerService {
 
 
     @Override
-    public List<LedgerDTO> getLedgersByAccount(Account account, String startDate, String endDate, Integer before, Integer after, Integer limit, String profileId) {
+    public List<Ledger> getLedgersByAccount(Account account, String startDate, String endDate, Integer before, Integer after, Integer limit, String profileId) {
         UUID id = account.getId();
         String endpoint = configLoaderService.getPropertyByName(LEDGER_ENDPOINT);
         StringBuilder sb = new StringBuilder();
@@ -50,7 +51,18 @@ public class LedgerServiceImpl implements LedgerService {
         endpoint += sb.toString();
         LOG.info("Endpoint <{}>", endpoint);
         URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
-        return coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        List<LedgerDTO> dtoList = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        var result = new ArrayList<Ledger>();
+        dtoList.forEach(o -> {
+            Ledger ledger = new Ledger(o);
+            LedgerDetail ledgerDetail = new LedgerDetail();
+            ledgerDetail.setTransferId(o.getDetails().getTransferId());
+            ledgerDetail.setTransferType(o.getDetails().getTransferType());
+            ledger.setLedgerDetail(ledgerDetail);
+            ledger.setAccount(account);
+            result.add(ledger);
+        });
+        return result;
     }
 
     private void endpointBuilder(boolean val, boolean val1, StringBuilder sb, String str, String str2, String value) {

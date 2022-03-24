@@ -1,11 +1,11 @@
 package pl.owczarczyk.coinbase.ledger;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import pl.owczarczyk.coinbase.account.Account;
-import pl.owczarczyk.coinbase.detail.Detail;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -23,7 +23,8 @@ public class Ledger {
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private String id;
     private String amount;
-    private Timestamp created_at;
+    @JsonProperty("created_at")
+    private Timestamp createdAt;
     @Column(precision = 19, scale = 10)
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
@@ -33,14 +34,14 @@ public class Ledger {
     @ManyToOne
     private Account account;
 
-    @OneToOne
-    @JoinColumn(name = "transfer_id")
-    private Detail detail;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "ledger_detail_id", referencedColumnName = "id", nullable = false)
+    private LedgerDetail ledgerDetail;
 
     public Ledger(LedgerDTO ledgerDTO) {
         this.id = ledgerDTO.getId();
         this.amount = ledgerDTO.getAmount();
-        this.created_at = ledgerDTO.getCreated_at();
+        this.createdAt = ledgerDTO.getCreatedAt();
         this.balance = ledgerDTO.getBalance();
         this.type = ledgerDTO.getType();
     }
