@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import pl.owczarczyk.coinbase.hold.Hold;
 import pl.owczarczyk.coinbase.ledger.Ledger;
+import pl.owczarczyk.coinbase.transfer.Transfer;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -34,13 +37,19 @@ public class Account {
     @JsonProperty("trading_enabled")
     private boolean tradingEnabled;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private List<Hold> holds;
+    private Set<Hold> holds;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
     @ToString.Exclude
-    private List<Ledger> ledgers;
+    private Set<Ledger> ledgers;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private Set<Transfer> transfers;
+
+
 
 
 }

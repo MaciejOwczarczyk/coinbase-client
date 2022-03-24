@@ -1,12 +1,10 @@
 package pl.owczarczyk.coinbase.ledger;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.*;
 
 
 @Setter
@@ -15,13 +13,12 @@ import java.util.*;
 @Data
 public class LedgerDTO {
 
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
     private String id;
     private String amount;
-    private Timestamp created_at;
+    @JsonProperty("created_at")
+    private Timestamp createdAt;
     private BigDecimal balance;
     private Type type;
-    private LinkedHashMap<String, String> details;
+    private LegerDetailDTO details;
 
 }
