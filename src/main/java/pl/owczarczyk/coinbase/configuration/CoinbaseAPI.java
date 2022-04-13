@@ -1,68 +1,113 @@
 package pl.owczarczyk.coinbase.configuration;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import pl.owczarczyk.coinbase.account.*;
-import pl.owczarczyk.coinbase.authorization.AuthorizationServiceImpl;
-import pl.owczarczyk.coinbase.timestamp.CoinbaseTimeStampServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Date;
+import org.springframework.stereotype.Component;
+import pl.owczarczyk.coinbase.account.Account;
+import pl.owczarczyk.coinbase.account.AccountRepository;
+import pl.owczarczyk.coinbase.account.AccountService;
+import pl.owczarczyk.coinbase.account.AccountServiceImpl;
+import pl.owczarczyk.coinbase.ledger.LedgerDetailRepository;
+import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
+import pl.owczarczyk.coinbase.generic.ServiceException;
+import pl.owczarczyk.coinbase.hold.Hold;
+import pl.owczarczyk.coinbase.hold.HoldRepository;
+import pl.owczarczyk.coinbase.hold.HoldServiceImpl;
+import pl.owczarczyk.coinbase.ledger.Ledger;
+import pl.owczarczyk.coinbase.ledger.LedgerRepository;
+import pl.owczarczyk.coinbase.ledger.LedgerServiceImpl;
+import pl.owczarczyk.coinbase.transfer.*;
+
+import java.util.List;
 import java.util.UUID;
+
 
 @Component
 public class CoinbaseAPI {
 
-    private static final String TEST = "/accounts/5613ee9c-24f2-4cb6-844a-0a91ee18041d";
-    private static final String TEST_2 = "https://api.exchange.coinbase.com/accounts";
-    private static final String TEST_3 = "https://api.exchange.coinbase.com/products";
-    private static final String TEST_4 = "https://api.exchange.coinbase.com/accounts/5613ee9c-24f2-4cb6-844a-0a91ee18041d";
-    private final AuthorizationServiceImpl authorizationService;
-    private final CoinbaseTimeStampServiceImpl timeStampService;
-    private final WebClient webClient;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
-    private final HoldRepository holdRepository;
 
-    public CoinbaseAPI(AuthorizationServiceImpl authorizationService, CoinbaseTimeStampServiceImpl timeStampService, WebClient webClient, AccountRepository accountRepository, AccountServiceImpl accountService, HoldRepository holdRepository) {
-        this.authorizationService = authorizationService;
-        this.timeStampService = timeStampService;
-        this.webClient = webClient;
+    private final LedgerServiceImpl ledgerService;
+    private final CoinbaseExchangeImpl coinbaseExchange;
+    private final HoldServiceImpl holdService;
+    private final LedgerRepository ledgerRepository;
+    private final LedgerDetailRepository ledgerDetailRepository;
+    private final HoldRepository holdRepository;
+    private final TransferService transferService;
+    private final TransferRepository transferRepository;
+    private static final Logger LOGGER = LogManager.getLogger(CoinbaseAPI.class.getName());
+
+    public CoinbaseAPI(AccountRepository accountRepository, AccountServiceImpl accountService, LedgerServiceImpl ledgerService, CoinbaseExchangeImpl coinbaseExchange, HoldServiceImpl holdService, LedgerRepository ledgerRepository, LedgerDetailRepository ledgerDetailRepository, HoldRepository holdRepository, TransferServiceImpl transferService, TransferRepository transferRepository) {
         this.accountRepository = accountRepository;
         this.accountService = accountService;
+        this.ledgerService = ledgerService;
+        this.coinbaseExchange = coinbaseExchange;
+        this.holdService = holdService;
+        this.ledgerRepository = ledgerRepository;
+        this.ledgerDetailRepository = ledgerDetailRepository;
         this.holdRepository = holdRepository;
+        this.transferService = transferService;
+        this.transferRepository = transferRepository;
     }
 
     public void test() throws Throwable {
 
-//        Account account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
+        try {
+            var accountList = accountService.getAllAccounts();
+            accountRepository.saveAll(accountList);
+            var account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
+
+            var transferList = transferService.getTransferByAccount(account);
+
 //
-//        Hold[] holds = accountService.getHoldsByAccount(account, null, null, 0);
-
-        Account account1 = accountService.getAccountById("848e086e-80c0-4f17-888d-e47bbbadc85b");
-
-//        Arrays.stream(holds).forEach(o -> {
-//            o.setAccount(account);
-//            holdRepository.save(o);
-//        });
-
-
-
-//        List<Hold> holdList = holdRepository.getAllByAccount_Id(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
+//            String dateStr = transferList.get(0).getCreatedAt();
 //
-//        Account account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
-
-//        UUID uuid = UUID.randomUUID();
-
-//        Hold[] holds = webClient.get()
+//            String formatIn = "yyyy-MM-dd HH:mm:ss.SSSSSS+00";
+//            String formatOut = "yyyy-MM-dd'T'HH:mm:ss.SSSz";
 //
-//        Hold hold = new Hold();
-//        hold.setId(uuid);
-//        hold.setAccount(account);
-//        holdRepository.save(hold);
+//
+//            LocalDateTime ldt = LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(formatIn));
+//
+//            Timestamp timestamp = Timestamp.valueOf(ldt);
+
+            List<Hold> holds2 = holdService.getHoldsByAccount(account, null, null, 0);
+            holds2.forEach(o -> {
+                o.setAccount(account);
+                holdRepository.save(o);
+            });
+
+            List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
+
+            ledgerRepository.saveAll(ledgers);
+
+            List<Transfer> transfers = transferService.getTransferByAccount(account);
+
+            transferRepository.saveAll(transfers);
+            transfers.forEach(o -> {
+                LOGGER.info(o.getId());
+            });
 
 
-//        System.out.println(mono.toString());
+
+            LOGGER.info(ledgers.size());
+
+            Account account1 = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
+            var holds = account1.getHolds();
+
+            LOGGER.info("eee");
+
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+//        List<Account> accountList = accountService.getAllAccounts();
+
+//
+
+
+//        Mono<Account> mono = accountService.getAccountById("848e086e-80c0-4f17-888d-e47bbbadc85b");
+
     }
 }
