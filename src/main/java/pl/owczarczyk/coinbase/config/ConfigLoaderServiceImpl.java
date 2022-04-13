@@ -17,6 +17,9 @@ public class ConfigLoaderServiceImpl implements ConfigLoaderService {
     private void init() {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("client.properties"))  {
             this.properties.load(inputStream);
+            this.properties.setProperty("client.coinbase.secret", System.getenv("COINBASE_SECRET"));
+            this.properties.setProperty("client.coinbase.key", System.getenv("COINBASE_KEY"));
+            this.properties.setProperty("client.coinbase.pass-phrase", System.getenv("COINBASE_PASS_PHRASE"));
         } catch (IOException e) {
             e.printStackTrace();
         }
