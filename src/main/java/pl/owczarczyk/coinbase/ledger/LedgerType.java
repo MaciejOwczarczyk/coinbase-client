@@ -2,7 +2,7 @@ package pl.owczarczyk.coinbase.ledger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public enum Type {
+public enum LedgerType {
 
     @JsonProperty("transfer")
     TRANSFER,

@@ -27,7 +27,8 @@ public class Hold {
     @Column(precision = 19, scale = 10)
     private BigDecimal amount;
     private String ref;
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private HoldType type;
 
     @NotEmpty
     @ManyToOne

@@ -39,7 +39,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         outPut.add("CB-ACCESS-SIGN", signature1);
         outPut.add("CB-ACCESS-TIMESTAMP", String.valueOf(timestamp));
         outPut.add("CB-ACCESS-KEY", apiKey);
-        outPut.add("Content-Type","application/json");
+        outPut.add("Content-HoldType","application/json");
         return outPut;
     }
 
@@ -61,7 +61,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             outPut.add("CB-ACCESS-TIMESTAMP", String.valueOf(timeStamp));
             outPut.add("CB-ACCESS-KEY", apiKey);
             outPut.add("CB-ACCESS-PASSPHRASE", passPhrase);
-            outPut.add("Content-Type","application/json");
+            outPut.add("Content-HoldType","application/json");
             outPut.add("Accept", "application/json");
             return outPut;
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {

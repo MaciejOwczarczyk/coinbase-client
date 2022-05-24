@@ -7,6 +7,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import pl.owczarczyk.coinbase.authorization.AuthorizationServiceImpl;
 import pl.owczarczyk.coinbase.configuration.RequestClient;
+import pl.owczarczyk.coinbase.hold.Hold;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +42,25 @@ public class CoinbaseExchangeImpl implements CoinbaseExchange {
         }
     }
 
+    public Flux<Hold> get2(String endpoint) {
+        try {
+            MultiValueMap<String, String> map = authorizationService.getHeaderPro(endpoint, RequestClient.GET.toString(), "");
+            return webClient
+                    .get()
+                    .uri(endpoint)
+                    .headers(httpHeaders -> httpHeaders.addAll(map)).retrieve().bodyToFlux(Hold.class);
+        } catch (WebClientResponseException e) {
+            throw new ServiceException(e.getMessage(), e.getRawStatusCode());
+        }
+    }
+
     @Override
     public <T> List<T> getAllAsList(String endPoint, ParameterizedTypeReference<T[]> type) {
         T[] response = get(endPoint, type);
         return Objects.nonNull(response) ? Arrays.asList(response) : emptyList();
     }
 
-    public String get2(String endpoint) {
+    public String getString(String endpoint) {
         try {
             MultiValueMap<String, String> map = authorizationService.getHeaderPro(endpoint, RequestClient.GET.toString(), "");
             return webClient

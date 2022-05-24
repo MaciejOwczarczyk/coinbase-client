@@ -18,7 +18,7 @@ public class LedgerDTO {
     @JsonProperty("created_at")
     private Timestamp createdAt;
     private BigDecimal balance;
-    private Type type;
+    private LedgerType type;
     private LegerDetailDTO details;
 
 }

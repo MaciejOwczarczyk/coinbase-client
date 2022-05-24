@@ -51,18 +51,36 @@ public class LedgerServiceImpl implements LedgerService {
         endpoint += sb.toString();
         LOG.info("Endpoint <{}>", endpoint);
         URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
-        List<LedgerDTO> dtoList = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        List<Ledger> dtoList = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
         var result = new ArrayList<Ledger>();
         dtoList.forEach(o -> {
-            Ledger ledger = new Ledger(o);
-            LedgerDetail ledgerDetail = new LedgerDetail();
-            ledgerDetail.setTransferId(o.getDetails().getTransferId());
-            ledgerDetail.setTransferType(o.getDetails().getTransferType());
-            ledger.setLedgerDetail(ledgerDetail);
-            ledger.setAccount(account);
-            result.add(ledger);
+//            Ledger ledger = new Ledger(o);
+//            LedgerDetail ledgerDetail = new LedgerDetail();
+//            ledgerDetail.setTransferId(o.getDetails().getTransferId());
+//            ledgerDetail.setTransferType(o.getDetails().getTransferType());
+////            ledger.setLedgerDetail(ledgerDetail);
+//            ledger.setAccount(account);
+//            result.add(ledger);
         });
-        return result;
+        return dtoList;
+    }
+
+    public String getLedgersByAccountString(Account account, String startDate, String endDate, Integer before, Integer after, Integer limit, String profileId) {
+        UUID id = account.getId();
+        String endpoint = configLoaderService.getPropertyByName(LEDGER_ENDPOINT);
+        StringBuilder sb = new StringBuilder();
+        endpointBuilder(Objects.nonNull(startDate), validator.isValidDate(startDate), sb, "?start_date=", "&start_date=", startDate);
+        endpointBuilder(Objects.nonNull(endDate), validator.isValidDate(endDate), sb, "?end_date=", "&end_date=", endDate);
+        endpointBuilder(Objects.nonNull(before), before > 0, sb, "?before=","&before=", String.valueOf(before));
+        endpointBuilder(Objects.nonNull(after), after > 0, sb, "?after=", "&after=", String.valueOf(after));
+        endpointBuilder(Objects.nonNull(limit), limit > 0, sb, "?limit=", "&limit=", String.valueOf(limit));
+        endpointBuilder(Objects.nonNull(profileId), StringUtils.isNotEmpty(profileId), sb,"?profile_id=", "&profile_id=", profileId);
+        endpoint += sb.toString();
+        LOG.info("Endpoint <{}>", endpoint);
+        URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
+        String out = coinbaseExchange.getString(uri.toString());
+
+        return out;
     }
 
     private void endpointBuilder(boolean val, boolean val1, StringBuilder sb, String str, String str2, String value) {

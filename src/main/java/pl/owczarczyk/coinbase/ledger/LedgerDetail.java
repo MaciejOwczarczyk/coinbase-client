@@ -9,16 +9,16 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-@Entity
+//@Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table(name = "ledger_detail", schema = "\"coinbaseapi\"")
-@ToString
+
+//@Table(name = "ledger_detail", schema = "\"coinbaseapi\"")
+//@ToString
 public class LedgerDetail {
 
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
+//    @Id
+//    @Column(name = "id", updatable = false, nullable = false)
     @JsonProperty("transfer_id")
     private String transferId;
     @JsonProperty("transfer_type")

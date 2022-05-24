@@ -33,20 +33,20 @@ public class CoinbaseAPI {
     private final CoinbaseExchangeImpl coinbaseExchange;
     private final HoldServiceImpl holdService;
     private final LedgerRepository ledgerRepository;
-    private final LedgerDetailRepository ledgerDetailRepository;
+//    private final LedgerDetailRepository ledgerDetailRepository;
     private final HoldRepository holdRepository;
     private final TransferService transferService;
     private final TransferRepository transferRepository;
     private static final Logger LOGGER = LogManager.getLogger(CoinbaseAPI.class.getName());
 
-    public CoinbaseAPI(AccountRepository accountRepository, AccountServiceImpl accountService, LedgerServiceImpl ledgerService, CoinbaseExchangeImpl coinbaseExchange, HoldServiceImpl holdService, LedgerRepository ledgerRepository, LedgerDetailRepository ledgerDetailRepository, HoldRepository holdRepository, TransferServiceImpl transferService, TransferRepository transferRepository) {
+    public CoinbaseAPI(AccountRepository accountRepository, AccountServiceImpl accountService, LedgerServiceImpl ledgerService, CoinbaseExchangeImpl coinbaseExchange, HoldServiceImpl holdService, LedgerRepository ledgerRepository, HoldRepository holdRepository, TransferServiceImpl transferService, TransferRepository transferRepository) {
         this.accountRepository = accountRepository;
         this.accountService = accountService;
         this.ledgerService = ledgerService;
         this.coinbaseExchange = coinbaseExchange;
         this.holdService = holdService;
         this.ledgerRepository = ledgerRepository;
-        this.ledgerDetailRepository = ledgerDetailRepository;
+//        this.ledgerDetailRepository = ledgerDetailRepository;
         this.holdRepository = holdRepository;
         this.transferService = transferService;
         this.transferRepository = transferRepository;
@@ -55,8 +55,11 @@ public class CoinbaseAPI {
     public void test() throws Throwable {
 
         try {
-            var accountList = accountService.getAllAccounts();
-            accountRepository.saveAll(accountList);
+//            var accountList = accountService.getAllAccounts();
+//
+//
+//
+//            accountRepository.saveAll(accountList);
             var account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
 
             var transferList = transferService.getTransferByAccount(account);
@@ -73,12 +76,12 @@ public class CoinbaseAPI {
 //            Timestamp timestamp = Timestamp.valueOf(ldt);
 
             List<Hold> holds2 = holdService.getHoldsByAccount(account, null, null, 0);
-            holds2.forEach(o -> {
-                o.setAccount(account);
-                holdRepository.save(o);
-            });
+            holdRepository.saveAll(holds2);
 
             List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
+
+            String ledgers2 = ledgerService.getLedgersByAccountString(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
+
 
             ledgerRepository.saveAll(ledgers);
 
@@ -94,7 +97,7 @@ public class CoinbaseAPI {
             LOGGER.info(ledgers.size());
 
             Account account1 = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
-            var holds = account1.getHolds();
+            var holds3 = account1.getHolds();
 
             LOGGER.info("eee");
 

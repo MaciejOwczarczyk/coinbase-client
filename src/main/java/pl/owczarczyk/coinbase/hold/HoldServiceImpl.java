@@ -8,7 +8,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.owczarczyk.coinbase.account.Account;
 import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
-
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +25,6 @@ public class HoldServiceImpl implements HoldService {
         this.configLoaderService = configLoaderService;
     }
 
-
     @Override
     public List<Hold> getHoldsByAccount(Account account, String before, String after, int limit) {
         UUID id = account.getId();
@@ -43,4 +41,5 @@ public class HoldServiceImpl implements HoldService {
         holdsTemp.forEach(o -> o.setAccount(account));
         return holdsTemp;
     }
+
 }

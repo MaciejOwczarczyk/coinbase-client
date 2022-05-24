@@ -21,11 +21,9 @@ public class WebClientFilter {
         return ExchangeFilterFunction.ofRequestProcessor(request -> {
             logMethodAndUrl(request);
             logHeaders(request);
-
             return Mono.just(request);
         });
     }
-
 
     public static ExchangeFilterFunction logResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(response -> {
@@ -35,7 +33,6 @@ public class WebClientFilter {
             return logBody(response);
         });
     }
-
 
     private static void logStatus(ClientResponse response) {
         HttpStatus status = response.statusCode();
@@ -55,11 +52,9 @@ public class WebClientFilter {
         }
     }
 
-
     private static void logHeaders(ClientResponse response) {
         response.headers().asHttpHeaders().forEach((name, values) -> values.forEach(value -> logNameAndValuePair(name, value)));
     }
-
 
     private static void logHeaders(ClientRequest request) {
         request.headers().forEach((name, values) -> values.forEach(value -> logNameAndValuePair(name, value)));
@@ -70,13 +65,11 @@ public class WebClientFilter {
         LOG.debug("{}={}", name, value);
     }
 
-
     private static void logMethodAndUrl(ClientRequest request) {
         StringBuilder sb = new StringBuilder();
         sb.append(request.method().name());
         sb.append(" to ");
         sb.append(request.url());
-
         LOG.debug(sb.toString());
     }
 }
