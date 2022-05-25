@@ -8,7 +8,6 @@ import pl.owczarczyk.coinbase.account.Account;
 import pl.owczarczyk.coinbase.account.AccountRepository;
 import pl.owczarczyk.coinbase.account.AccountService;
 import pl.owczarczyk.coinbase.account.AccountServiceImpl;
-import pl.owczarczyk.coinbase.ledger.LedgerDetailRepository;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
 import pl.owczarczyk.coinbase.generic.ServiceException;
 import pl.owczarczyk.coinbase.hold.Hold;
@@ -80,7 +79,7 @@ public class CoinbaseAPI {
 
             List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
 
-            String ledgers2 = ledgerService.getLedgersByAccountString(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
+//            String ledgers2 = ledgerService.getLedgersByAccountString(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
 
 
             ledgerRepository.saveAll(ledgers);

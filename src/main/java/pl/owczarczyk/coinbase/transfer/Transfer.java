@@ -1,18 +1,19 @@
 package pl.owczarczyk.coinbase.transfer;
 
-
 import lombok.*;
+import org.hibernate.Hibernate;
 import pl.owczarczyk.coinbase.account.Account;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "transfer", schema = "\"coinbaseapi\"")
-@Data
+@ToString
+@RequiredArgsConstructor
 public class Transfer {
 
     @Id
@@ -33,4 +34,16 @@ public class Transfer {
     @ManyToOne
     private Account account;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Transfer transfer = (Transfer) o;
+        return id != null && Objects.equals(id, transfer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -13,6 +13,7 @@ import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 import pl.owczarczyk.coinbase.generic.WebClientFilter;
 import reactor.netty.http.client.HttpClient;
 
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -26,7 +27,7 @@ public class AppConfig {
     private static final String SERVER_COINBASE_URL = "server.coinbase.url";
 
     @Bean
-    public WebClient webClient() {
+    public WebClient webClient() throws IOException {
         HttpClient client = HttpClient.create()
                 .responseTimeout(Duration.ofSeconds(5));
         String baseUri = configLoaderService().getPropertyByName(SERVER_COINBASE_URL);
@@ -39,7 +40,7 @@ public class AppConfig {
     }
 
     @Bean
-    public ConfigLoaderServiceImpl configLoaderService() {
+    public ConfigLoaderServiceImpl configLoaderService() throws IOException {
         return new ConfigLoaderServiceImpl();
     }
 

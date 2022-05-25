@@ -1,25 +1,16 @@
 package pl.owczarczyk.coinbase.ledger;
 
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.Type;
+import lombok.*;
+import org.hibernate.Hibernate;
 import pl.owczarczyk.coinbase.account.Account;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 @Entity
 @Setter
@@ -28,7 +19,6 @@ import java.util.Map;
 @ToString
 @NoArgsConstructor
 public class Ledger {
-
 
     @Id
     @Column(name = "id", updatable = false, nullable = false, unique = true)
@@ -46,4 +36,16 @@ public class Ledger {
     @ManyToOne
     private Account account;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Ledger ledger = (Ledger) o;
+        return id != null && Objects.equals(id, ledger.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -8,5 +8,6 @@ import java.util.UUID;
 @Repository
 public interface LedgerRepository extends JpaRepository<Ledger, UUID> {
 
+    Ledger getLedgerById(String id);
 
 }
