@@ -8,6 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.owczarczyk.coinbase.account.Account;
 import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
+
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;

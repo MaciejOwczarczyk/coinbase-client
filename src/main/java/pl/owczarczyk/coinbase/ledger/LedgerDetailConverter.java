@@ -6,7 +6,7 @@ import javax.persistence.Converter;
 @Converter
 public class LedgerDetailConverter implements AttributeConverter<LedgerDetail, String> {
 
-    private static final String SEPARATOR = ", ";
+    private static final String SEPARATOR = ",";
 
     @Override
     public String convertToDatabaseColumn(LedgerDetail ledgerDetail) {
@@ -31,7 +31,7 @@ public class LedgerDetailConverter implements AttributeConverter<LedgerDetail, S
         }
 
         String[] pieces = s.split(SEPARATOR);
-        if (pieces == null || pieces.length == 0) {
+        if (pieces.length == 0) {
             return null;
         }
 

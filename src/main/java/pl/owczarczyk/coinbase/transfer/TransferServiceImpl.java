@@ -25,32 +25,26 @@ public class TransferServiceImpl implements TransferService {
         this.coinbaseExchange = coinbaseExchange;
     }
 
-
     @Override
     public List<Transfer> getTransferByAccount(Account account) {
         UUID id = account.getId();
         String endpoint = configLoaderService.getPropertyByName(TRANSFER_ENDPOINT);
         URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
-        List<TransferDTO> transferDTOList = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
-        var out = new ArrayList<Transfer>();
-        transferDTOList.forEach( o -> {
-            TransferDetail transferDetail = new TransferDetail();
-            transferDetail.setCoinbaseTransactionId(o.getDetails().getCoinbaseTransactionId());
-            transferDetail.setCoinbaseAccountId(o.getDetails().getCoinbaseAccountId());
-            transferDetail.setCoinbasePaymentMethodId(o.getDetails().getCoinbasePaymentMethodId());
-            Transfer transfer = new Transfer();
-            transfer.setId(o.getId());
-            transfer.setType(o.getType());
-            transfer.setCreatedAt(o.getCreatedAt());
-            transfer.setCompletedAt(o.getCompletedAt());
-            transfer.setCanceledAt(o.getCanceledAt());
-            transfer.setProcessedAt(o.getProcessedAt());
-            transfer.setAmount(o.getAmount());
-            transfer.setUserNonce(o.getUserNonce());
-            transfer.setAccount(account);
-            transfer.setTransferDetail(transferDetail);
-            out.add(transfer);
-        });
-        return out;
+        List<Transfer> transferList = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        transferList.forEach(o -> o.setAccount(account));
+        return transferList;
+    }
+
+    public String getTransferString(Account account) {
+        UUID id = account.getId();
+        String endpoint = configLoaderService.getPropertyByName(TRANSFER_ENDPOINT);
+        URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
+        return coinbaseExchange.getString(uri.toString());
+    }
+
+
+    @Override
+    public List<Transfer> getAllTransfers() {
+        return null;
     }
 }

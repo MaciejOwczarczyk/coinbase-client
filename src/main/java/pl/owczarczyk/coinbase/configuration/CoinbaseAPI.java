@@ -10,13 +10,18 @@ import pl.owczarczyk.coinbase.account.AccountService;
 import pl.owczarczyk.coinbase.account.AccountServiceImpl;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
 import pl.owczarczyk.coinbase.generic.ServiceException;
+import pl.owczarczyk.coinbase.hold.HoldService;
+import pl.owczarczyk.coinbase.ledger.LedgerService;
+import pl.owczarczyk.coinbase.transfer.TransferService;
+import pl.owczarczyk.coinbase.transfer.TransferServiceImpl;
 import pl.owczarczyk.coinbase.hold.Hold;
 import pl.owczarczyk.coinbase.hold.HoldRepository;
 import pl.owczarczyk.coinbase.hold.HoldServiceImpl;
 import pl.owczarczyk.coinbase.ledger.Ledger;
 import pl.owczarczyk.coinbase.ledger.LedgerRepository;
 import pl.owczarczyk.coinbase.ledger.LedgerServiceImpl;
-import pl.owczarczyk.coinbase.transfer.*;
+import pl.owczarczyk.coinbase.transfer.Transfer;
+import pl.owczarczyk.coinbase.transfer.TransferRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,11 +33,10 @@ public class CoinbaseAPI {
     private final AccountRepository accountRepository;
     private final AccountService accountService;
 
-    private final LedgerServiceImpl ledgerService;
+    private final LedgerService ledgerService;
     private final CoinbaseExchangeImpl coinbaseExchange;
-    private final HoldServiceImpl holdService;
+    private final HoldService holdService;
     private final LedgerRepository ledgerRepository;
-//    private final LedgerDetailRepository ledgerDetailRepository;
     private final HoldRepository holdRepository;
     private final TransferService transferService;
     private final TransferRepository transferRepository;
@@ -54,62 +58,26 @@ public class CoinbaseAPI {
     public void test() throws Throwable {
 
         try {
-//            var accountList = accountService.getAllAccounts();
-//
-//
-//
-//            accountRepository.saveAll(accountList);
+
             var account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
 
-            var transferList = transferService.getTransferByAccount(account);
+            String transfer = transferService.getTransferString(account);
 
+//            List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, null, null, 0, 0, 0, null);
 //
-//            String dateStr = transferList.get(0).getCreatedAt();
-//
-//            String formatIn = "yyyy-MM-dd HH:mm:ss.SSSSSS+00";
-//            String formatOut = "yyyy-MM-dd'T'HH:mm:ss.SSSz";
-//
-//
-//            LocalDateTime ldt = LocalDateTime.parse(dateStr, DateTimeFormatter.ofPattern(formatIn));
-//
-//            Timestamp timestamp = Timestamp.valueOf(ldt);
+//            ledgerRepository.saveAll(ledgers);
 
-            List<Hold> holds2 = holdService.getHoldsByAccount(account, null, null, 0);
-            holdRepository.saveAll(holds2);
-
-            List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
-
-//            String ledgers2 = ledgerService.getLedgersByAccountString(account, "2020/11/01", null, 1, 1, 1, "8e3baeea-c5a4-42e8-baf3-733c8f0f7b07");
-
-
-            ledgerRepository.saveAll(ledgers);
-
-            List<Transfer> transfers = transferService.getTransferByAccount(account);
-
-            transferRepository.saveAll(transfers);
-            transfers.forEach(o -> {
-                LOGGER.info(o.getId());
+            List<Transfer> transferList = transferService.getTransferByAccount(account);
+            transferList.forEach(o ->  {
+                o.setAccount(account);
+                transferRepository.save(o);
             });
 
-
-
-            LOGGER.info(ledgers.size());
-
-            Account account1 = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
-            var holds3 = account1.getHolds();
-
-            LOGGER.info("eee");
+//            System.out.println(transfer);
 
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-
-//        List<Account> accountList = accountService.getAllAccounts();
-
-//
-
-
-//        Mono<Account> mono = accountService.getAccountById("848e086e-80c0-4f17-888d-e47bbbadc85b");
 
     }
 }

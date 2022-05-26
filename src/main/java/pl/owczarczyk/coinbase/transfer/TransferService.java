@@ -7,4 +7,6 @@ import java.util.List;
 public interface TransferService {
 
     List<Transfer> getTransferByAccount(Account account);
+    List<Transfer> getAllTransfers();
+    String getTransferString(Account account);
 }
