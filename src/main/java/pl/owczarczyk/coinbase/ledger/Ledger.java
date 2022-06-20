@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.Hibernate;
 import pl.owczarczyk.coinbase.account.Account;
+import pl.owczarczyk.coinbase.transfer.Transfer;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -30,11 +31,16 @@ public class Ledger {
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private LedgerType type;
-    @Convert(converter = LedgerDetailConverter.class)
+
+//    @Convert(converter = LedgerDetailConverter.class)
+    @Transient
     private LedgerDetail details;
     @NotEmpty
     @ManyToOne
     private Account account;
+
+    @OneToOne
+    private Transfer transfer;
 
     @Override
     public boolean equals(Object o) {

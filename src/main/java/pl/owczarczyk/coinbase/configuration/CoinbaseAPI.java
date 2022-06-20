@@ -8,6 +8,8 @@ import pl.owczarczyk.coinbase.account.Account;
 import pl.owczarczyk.coinbase.account.AccountRepository;
 import pl.owczarczyk.coinbase.account.AccountService;
 import pl.owczarczyk.coinbase.account.AccountServiceImpl;
+import pl.owczarczyk.coinbase.config.ConfigLoaderService;
+import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
 import pl.owczarczyk.coinbase.generic.ServiceException;
 import pl.owczarczyk.coinbase.hold.HoldService;
@@ -24,6 +26,8 @@ import pl.owczarczyk.coinbase.transfer.Transfer;
 import pl.owczarczyk.coinbase.transfer.TransferRepository;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -40,9 +44,10 @@ public class CoinbaseAPI {
     private final HoldRepository holdRepository;
     private final TransferService transferService;
     private final TransferRepository transferRepository;
+    private final ConfigLoaderService configLoaderService;
     private static final Logger LOGGER = LogManager.getLogger(CoinbaseAPI.class.getName());
 
-    public CoinbaseAPI(AccountRepository accountRepository, AccountServiceImpl accountService, LedgerServiceImpl ledgerService, CoinbaseExchangeImpl coinbaseExchange, HoldServiceImpl holdService, LedgerRepository ledgerRepository, HoldRepository holdRepository, TransferServiceImpl transferService, TransferRepository transferRepository) {
+    public CoinbaseAPI(AccountRepository accountRepository, AccountServiceImpl accountService, LedgerServiceImpl ledgerService, CoinbaseExchangeImpl coinbaseExchange, HoldServiceImpl holdService, LedgerRepository ledgerRepository, HoldRepository holdRepository, TransferServiceImpl transferService, TransferRepository transferRepository, ConfigLoaderServiceImpl configLoaderService) {
         this.accountRepository = accountRepository;
         this.accountService = accountService;
         this.ledgerService = ledgerService;
@@ -53,19 +58,37 @@ public class CoinbaseAPI {
         this.holdRepository = holdRepository;
         this.transferService = transferService;
         this.transferRepository = transferRepository;
+        this.configLoaderService = configLoaderService;
     }
 
     public void test() throws Throwable {
 
         try {
 
+            var accounts = accountService.getAllAccounts();
+
+            accountRepository.saveAll(accounts);
+
+            var endpoint = "server.coinbase.transfers";
+
+            var endpointretrieved = configLoaderService.getPropertyByName(endpoint);
+
+            String test = coinbaseExchange.getString(endpointretrieved);
+
             var account = accountRepository.findAccountById(UUID.fromString("848e086e-80c0-4f17-888d-e47bbbadc85b"));
 
             String transfer = transferService.getTransferString(account);
 
-//            List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, null, null, 0, 0, 0, null);
+            String ledge = ledgerService.getTransferString(account);
+
+            List<Ledger> ledgers = ledgerService.getLedgersByAccount(account, null, null, 0, 0, 0, null);
 //
-//            ledgerRepository.saveAll(ledgers);
+            ledgers.forEach(o -> {
+                String transferId = o.getDetails().getTransferId();
+                Optional<Transfer> transfer1 = transferRepository.getTransferById(UUID.fromString(transferId));
+                transfer1.ifPresent(o::setTransfer);
+                ledgerRepository.save(o);
+            });
 
             List<Transfer> transferList = transferService.getTransferByAccount(account);
             transferList.forEach(o ->  {

@@ -9,6 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.owczarczyk.coinbase.account.Account;
 import pl.owczarczyk.coinbase.config.ConfigLoaderServiceImpl;
 import pl.owczarczyk.coinbase.generic.CoinbaseExchangeImpl;
+import pl.owczarczyk.coinbase.utils.Validatable;
 import pl.owczarczyk.coinbase.utils.Validator;
 
 import java.net.URI;
@@ -22,7 +23,7 @@ public class LedgerServiceImpl implements LedgerService {
 
     private final ConfigLoaderServiceImpl configLoaderService;
     private final CoinbaseExchangeImpl coinbaseExchange;
-    private final Validator validator;
+    private final Validatable validator;
     private static final String LEDGER_ENDPOINT = "server.coinbase.ledger";
     private static final Logger LOG = LogManager.getLogger(LedgerServiceImpl.class);
     private static final String DATE_PATTERN = "server.ledger.date.pattern";
@@ -48,7 +49,16 @@ public class LedgerServiceImpl implements LedgerService {
         endpoint += sb.toString();
         LOG.info("Endpoint <{}>", endpoint);
         URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
-        return coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        List<Ledger> ledgers = coinbaseExchange.getAllAsList(uri.toString(), new ParameterizedTypeReference<>() {});
+        ledgers.forEach(o -> o.setAccount(account));
+        return ledgers;
+    }
+
+    public String getTransferString(Account account) {
+        UUID id = account.getId();
+        String endpoint = configLoaderService.getPropertyByName(LEDGER_ENDPOINT);
+        URI uri = UriComponentsBuilder.fromUriString(endpoint).build(id);
+        return coinbaseExchange.getString(uri.toString());
     }
 
     private void endpointBuilder(boolean val, boolean val1, StringBuilder sb, String str, String str2, String value) {
